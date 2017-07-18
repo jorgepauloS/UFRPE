@@ -13,16 +13,25 @@ class ArvoreBn:
         self.fEsquerdo=None
         self.fDireito=None
         self.Noh=nNoh
-
+        
     def getIrmao(self,nNoh):
         temp = self.getPai(nNoh)
         if temp == None:
             return None
         temp2 = self.busca(Noh(temp,None))
         if self.ehEsquerdo(nNoh):
-            return temp2.fDireito.Noh.getId()
+            if temp2.fDireito:
+                return temp2.fDireito.Noh.getId()
+            else:
+                return None
         elif self.ehDireito(nNoh):
-            return temp2.fEsquerdo.Noh.getId()
+            if temp2.fEsquerdo:
+                return temp2.fEsquerdo.Noh.getId()
+            else:
+                return None
+        else:
+            return None
+        
     def ehEsquerdo(self,nNoh):
         temp = self.getPai(nNoh)
         if temp == None:
@@ -31,10 +40,11 @@ class ArvoreBn:
         temp3 = None
         if temp2.fEsquerdo:
             temp3 = temp2.fEsquerdo.Noh.getId()
-        if temp3 == nNoh.getId():
-            return True
-        else:
-            return False
+            if temp3 == nNoh.getId():
+                return True
+            else:
+                return False
+            
     def ehDireito(self,nNoh):
         temp = self.getPai(nNoh)
         if temp == None:
@@ -43,49 +53,53 @@ class ArvoreBn:
         temp3 = None
         if temp2.fDireito:
             temp3 = temp2.fDireito.Noh.getId()
-        if temp3 == nNoh.getId():
-            return True
-        else:
-            return False
-    
+            if temp3 == nNoh.getId():
+                return True
+            else:
+                return False
+
     def getInfo(self,Noh):
         return self.busca(Noh).Noh.Dados()
+    
     def getPai(self,Noh):
         temp = self.busca(Noh)
         if temp.Pai:
             return temp.Pai.Noh.getId()
         else:
             return None
+        
     def getEsquerdo(self,Noh):
         temp = self.busca(Noh)
         if temp.fEsquerdo:
-            return temp.fEsquerdo.Noh
+            return temp.fEsquerdo
         else:
             return None
+        
     def getDireito(self,Noh):
         temp = self.busca(Noh)
         if temp.fDireito:
-            return temp.fDireito.Noh
+            return temp.fDireito
         else:
             return None
+        
     def add(self, Noh):
         if Noh.idNoh>=self.Noh.idNoh:
             self.addDireito(Noh)
         else:
             self.addEsquerdo(Noh)
- 
+
     def addEsquerdo(self,Noh):
         if self.fEsquerdo:
             self.fEsquerdo.add(Noh)
         else:
             self.fEsquerdo=ArvoreBn(Noh,self)
- 
+
     def addDireito(self,Noh):
         if self.fDireito:
             self.fDireito.add(Noh)
         else:
             self.fDireito=ArvoreBn(Noh,self)
- 
+
     def busca(self,Noh):
         if Noh.idNoh>self.Noh.idNoh:
             if self.fDireito:
@@ -95,29 +109,49 @@ class ArvoreBn:
         elif Noh.idNoh<self.Noh.idNoh:
             if self.fEsquerdo:
                 return self.fEsquerdo.busca(Noh)
-            else :
+            else:
                 return None
         else:
             return self
-        
-    def maximo(self):
-        Noh = self.Noh
-        while self.getDireito(Noh):
-            Noh = self.getDireito(Noh)
-        return Noh
-    def minimo(self):
-        Noh = self.Noh
-        while self.getEsquerdo(Noh):
-            Noh = self.getEsquerdo(Noh)
-        return Noh
+
+    def maximo(self,nNoh):
+        temp = self.busca(nNoh)
+        if temp == None:
+            return None
+        while temp.getDireito(temp.Noh):
+            temp = temp.getDireito(temp.Noh)
+        return temp.Noh
     
-tempNoh = Noh(5,"Qualquer merda")
-testearv = ArvoreBn(tempNoh,None)
-testearv.add(Noh(2,[1,2]))
-testearv.add(Noh(3,[1,3]))
-testearv.add(Noh(1,[1,1]))
-testearv.add(Noh(7,[1,7]))
-testearv.add(Noh(6,[1,6]))
-testearv.add(Noh(8,[1,8]))
-NohBusca = Noh(8,[])
-print(testearv.getIrmao(NohBusca))
+    def minimo(self,nNoh):
+        temp = self.busca(nNoh)
+        if temp == None:
+            return None
+        while temp.getEsquerdo(temp.Noh):
+            temp = temp.getEsquerdo(temp.Noh)
+        return temp.Noh
+    
+    def sucessor(self,nNoh):
+        temp = self.busca(nNoh).getDireito(nNoh)
+        if temp:
+            return self.minimo(temp.Noh).Dados()
+        else:
+            None
+            
+    def antecessor(self,nNoh):
+        temp = self.busca(nNoh).getEsquerdo(nNoh)
+        if temp:
+            return self.maximo(temp.Noh).Dados()
+        else:
+            None
+    def verificar(self):
+        return None
+    def deletar(self,nNoh):
+        return None
+
+testearv = ArvoreBn(Noh(14,[14]),None)
+lista = [15,4,9,7,18,3,5,16,4,20,17,9,14,5]
+for i in lista:
+    testearv.add(Noh(i,[i]))
+NohBusca = Noh(18,[])
+print(testearv.antecessor(NohBusca))
+
